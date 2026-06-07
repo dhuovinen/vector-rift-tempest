@@ -12,9 +12,17 @@
 body {
   margin: 0;
   min-height: 100vh;
+  overscroll-behavior: none;
   background:
     radial-gradient(circle at 24% 18%, rgba(0, 229, 255, 0.2), transparent 28%),
     linear-gradient(135deg, #080d12 0%, #141019 48%, #071215 100%);
+}
+
+body.game-running {
+  position: fixed;
+  inset: auto 0 0 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .shell {

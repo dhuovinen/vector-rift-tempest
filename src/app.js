@@ -45,6 +45,7 @@ const input = {
 };
 
 let lastTime = performance.now();
+let lockedScrollY = 0;
 const touchRotation = {
   pointerId: null,
   x: 0,
@@ -249,6 +250,7 @@ function updateHud(snapshot) {
   if (snapshot.state === "gameover") {
     startButton.textContent = "Restart";
   }
+  setScrollLock(snapshot.state === "running");
 }
 
 function frame(now) {
@@ -272,6 +274,21 @@ function setToggleOptions() {
     comboWeapons: comboToggle.checked,
     inputSensitivity: Number(inputSpeed.value),
   });
+}
+
+function setScrollLock(locked) {
+  if (locked === document.body.classList.contains("game-running")) return;
+
+  if (locked) {
+    lockedScrollY = window.scrollY;
+    document.body.style.top = `-${lockedScrollY}px`;
+    document.body.classList.add("game-running");
+    return;
+  }
+
+  document.body.classList.remove("game-running");
+  document.body.style.top = "";
+  window.scrollTo(0, lockedScrollY);
 }
 
 function isPlayableTouch() {
@@ -320,6 +337,12 @@ function stopTouchRotation(event) {
   touchRotation.remainder = 0;
 }
 
+function preventGameplayScroll(event) {
+  if (engine.snapshot().state !== "running") return;
+  if (helpModal.contains(event.target) || event.target.closest(".panel")) return;
+  event.preventDefault();
+}
+
 startButton.addEventListener("click", () => {
   setToggleOptions();
   audio.unlock();
@@ -332,6 +355,8 @@ arenaToggle.addEventListener("change", setToggleOptions);
 comboToggle.addEventListener("change", setToggleOptions);
 inputSpeed.addEventListener("input", setToggleOptions);
 window.addEventListener("resize", resize);
+window.addEventListener("touchmove", preventGameplayScroll, { passive: false });
+window.addEventListener("touchstart", preventGameplayScroll, { passive: false });
 touchFireZone.addEventListener("pointerdown", fireFromTouch);
 touchRotateZone.addEventListener("pointerdown", startTouchRotation);
 touchRotateZone.addEventListener("pointermove", moveTouchRotation);
