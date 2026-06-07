@@ -1,4 +1,5 @@
 const TWO_PI = Math.PI * 2;
+const INPUT_ROTATION_INTERVAL = 1 / 30;
 
 function mulberry32(seed) {
   let value = seed >>> 0;
@@ -36,6 +37,8 @@ export class TempestEngine {
     this.time = 0;
     this.spawnTimer = 0.25;
     this.shotCooldown = 0;
+    this.inputRotationTimer = 0;
+    this.lastInputDirection = 0;
     this.enemiesCleared = 0;
     this.enemies = [];
     this.bullets = [];
@@ -108,8 +111,7 @@ export class TempestEngine {
     this.time += dt;
     this.shotCooldown = Math.max(0, this.shotCooldown - dt);
 
-    if (input.left) this.rotate(-1);
-    if (input.right) this.rotate(1);
+    this.handleRotationInput(dt, input);
     if (input.fire) this.shoot();
     if (input.special) this.useSpecial();
 
@@ -127,6 +129,28 @@ export class TempestEngine {
     this.advanceWaveIfNeeded();
 
     return this.snapshot();
+  }
+
+  handleRotationInput(dt, input) {
+    const direction = input.left && !input.right ? -1 : input.right && !input.left ? 1 : 0;
+    if (!direction) {
+      this.lastInputDirection = 0;
+      this.inputRotationTimer = 0;
+      return;
+    }
+
+    if (direction !== this.lastInputDirection) {
+      this.rotate(direction);
+      this.lastInputDirection = direction;
+      this.inputRotationTimer = INPUT_ROTATION_INTERVAL;
+      return;
+    }
+
+    this.inputRotationTimer -= dt;
+    while (this.inputRotationTimer <= 0) {
+      this.rotate(direction);
+      this.inputRotationTimer += INPUT_ROTATION_INTERVAL;
+    }
   }
 
   spawnEnemy(lane = null, depth = 0.08) {

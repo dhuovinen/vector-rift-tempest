@@ -32,6 +32,18 @@ test("arena enhancement can be disabled independently", () => {
   assert.equal(engine.snapshot().arena.type, "classic");
 });
 
+test("held rotation input advances at the tuned repeat rate", () => {
+  const engine = new TempestEngine({ seed: 7, evolvingArena: false, comboWeapons: false });
+  engine.start();
+  engine.spawnTimer = 999;
+
+  for (let i = 0; i < 60; i += 1) {
+    engine.tick(1 / 60, { right: true });
+  }
+
+  assert.equal(engine.snapshot().playerLane, 14);
+});
+
 test("arena enhancement changes arena rules by wave when enabled", () => {
   const engine = new TempestEngine({ seed: 7, evolvingArena: true, comboWeapons: false });
   engine.start();
