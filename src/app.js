@@ -250,7 +250,7 @@ function updateHud(snapshot) {
   if (snapshot.state === "gameover") {
     startButton.textContent = "Restart";
   }
-  setScrollLock(snapshot.state === "running");
+  setScrollLock(snapshot.state === "running" && isTouchGameplayDevice());
 }
 
 function frame(now) {
@@ -289,6 +289,10 @@ function setScrollLock(locked) {
   document.body.classList.remove("game-running");
   document.body.style.top = "";
   window.scrollTo(0, lockedScrollY);
+}
+
+function isTouchGameplayDevice() {
+  return window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
 }
 
 function isPlayableTouch() {
