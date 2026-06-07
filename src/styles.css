@@ -233,6 +233,30 @@ button {
   accent-color: #50f0ff;
 }
 
+.range-control {
+  display: grid;
+  gap: 10px;
+  color: #d8edf2;
+}
+
+.range-control span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #9fb8c0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.range-control strong {
+  color: #f2c56f;
+}
+
+.range-control input {
+  width: 100%;
+  accent-color: #50f0ff;
+}
+
 .meter div {
   height: 12px;
   margin-top: 8px;

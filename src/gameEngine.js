@@ -1,5 +1,6 @@
 const TWO_PI = Math.PI * 2;
-const INPUT_ROTATION_INTERVAL = 1 / 21;
+const DEFAULT_INPUT_SENSITIVITY = 8;
+const INPUT_ROTATION_STEPS_PER_SECOND = [4, 6, 8, 10, 12, 15, 18, 21, 25, 30];
 
 function mulberry32(seed) {
   let value = seed >>> 0;
@@ -21,6 +22,7 @@ export class TempestEngine {
     this.options = {
       evolvingArena: options.evolvingArena ?? true,
       comboWeapons: options.comboWeapons ?? true,
+      inputSensitivity: this.normalizeInputSensitivity(options.inputSensitivity ?? DEFAULT_INPUT_SENSITIVITY),
     };
     this.reset();
   }
@@ -49,6 +51,7 @@ export class TempestEngine {
 
   setOptions(nextOptions) {
     this.options = { ...this.options, ...nextOptions };
+    this.options.inputSensitivity = this.normalizeInputSensitivity(this.options.inputSensitivity);
     this.arena = this.createArena();
   }
 
@@ -142,15 +145,26 @@ export class TempestEngine {
     if (direction !== this.lastInputDirection) {
       this.rotate(direction);
       this.lastInputDirection = direction;
-      this.inputRotationTimer = INPUT_ROTATION_INTERVAL;
+      this.inputRotationTimer = this.inputRotationInterval();
       return;
     }
 
     this.inputRotationTimer -= dt;
     while (this.inputRotationTimer <= 0) {
       this.rotate(direction);
-      this.inputRotationTimer += INPUT_ROTATION_INTERVAL;
+      this.inputRotationTimer += this.inputRotationInterval();
     }
+  }
+
+  inputRotationInterval() {
+    const stepsPerSecond = INPUT_ROTATION_STEPS_PER_SECOND[this.options.inputSensitivity - 1];
+    return 1 / stepsPerSecond;
+  }
+
+  normalizeInputSensitivity(value) {
+    const numeric = Number(value);
+    if (!Number.isFinite(numeric)) return DEFAULT_INPUT_SENSITIVITY;
+    return Math.min(10, Math.max(1, Math.round(numeric)));
   }
 
   spawnEnemy(lane = null, depth = 0.08) {
@@ -319,6 +333,7 @@ export class TempestEngine {
       special: this.special,
       laneCount: this.laneCount,
       playerLane: this.playerLane,
+      inputSensitivity: this.options.inputSensitivity,
       arena: {
         type: this.arena.type,
         blockedLanes: [...this.arena.blockedLanes],

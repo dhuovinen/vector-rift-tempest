@@ -14,6 +14,8 @@ const buildStamp = document.querySelector("#buildStamp");
 const soundToggle = document.querySelector("#soundToggle");
 const arenaToggle = document.querySelector("#arenaToggle");
 const comboToggle = document.querySelector("#comboToggle");
+const inputSpeed = document.querySelector("#inputSpeed");
+const inputSpeedValue = document.querySelector("#inputSpeedValue");
 
 const hud = {
   state: document.querySelector("#stateLabel"),
@@ -27,6 +29,7 @@ const hud = {
 const engine = new TempestEngine({
   evolvingArena: arenaToggle.checked,
   comboWeapons: comboToggle.checked,
+  inputSensitivity: Number(inputSpeed.value),
 });
 const audio = new GameAudio();
 audio.setEnabled(soundToggle.checked);
@@ -256,9 +259,11 @@ function frame(now) {
 }
 
 function setToggleOptions() {
+  inputSpeedValue.textContent = inputSpeed.value;
   engine.setOptions({
     evolvingArena: arenaToggle.checked,
     comboWeapons: comboToggle.checked,
+    inputSensitivity: Number(inputSpeed.value),
   });
 }
 
@@ -272,6 +277,7 @@ startButton.addEventListener("click", () => {
 soundToggle.addEventListener("change", () => audio.setEnabled(soundToggle.checked));
 arenaToggle.addEventListener("change", setToggleOptions);
 comboToggle.addEventListener("change", setToggleOptions);
+inputSpeed.addEventListener("input", setToggleOptions);
 window.addEventListener("resize", resize);
 helpButton.addEventListener("click", () => helpModal.classList.remove("hidden"));
 helpCloseButton.addEventListener("click", () => helpModal.classList.add("hidden"));
@@ -298,6 +304,7 @@ window.addEventListener("keyup", (event) => {
 });
 
 resize();
+setToggleOptions();
 render(engine.snapshot());
 updateHud(engine.snapshot());
 requestAnimationFrame(frame);

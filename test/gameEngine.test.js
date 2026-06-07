@@ -32,7 +32,7 @@ test("arena enhancement can be disabled independently", () => {
   assert.equal(engine.snapshot().arena.type, "classic");
 });
 
-test("held rotation input advances at the tuned repeat rate", () => {
+test("held rotation input defaults to sensitivity level 8", () => {
   const engine = new TempestEngine({ seed: 7, evolvingArena: false, comboWeapons: false });
   engine.start();
   engine.spawnTimer = 999;
@@ -42,6 +42,24 @@ test("held rotation input advances at the tuned repeat rate", () => {
   }
 
   assert.equal(engine.snapshot().playerLane, 5);
+  assert.equal(engine.snapshot().inputSensitivity, 8);
+});
+
+test("input sensitivity can be configured from slow to fast", () => {
+  const slow = new TempestEngine({ seed: 7, evolvingArena: false, comboWeapons: false, inputSensitivity: 1 });
+  const fast = new TempestEngine({ seed: 7, evolvingArena: false, comboWeapons: false, inputSensitivity: 10 });
+  slow.start();
+  fast.start();
+  slow.spawnTimer = 999;
+  fast.spawnTimer = 999;
+
+  for (let i = 0; i < 60; i += 1) {
+    slow.tick(1 / 60, { right: true });
+    fast.tick(1 / 60, { right: true });
+  }
+
+  assert.equal(slow.snapshot().playerLane, 4);
+  assert.equal(fast.snapshot().playerLane, 14);
 });
 
 test("arena enhancement changes arena rules by wave when enabled", () => {
