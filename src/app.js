@@ -1,4 +1,5 @@
 import "./styles.css";
+import { BUILD_STAMP } from "./buildInfo.js";
 import { TempestEngine } from "./gameEngine.js";
 import { GameAudio } from "./sound.js";
 
@@ -6,6 +7,10 @@ const canvas = document.querySelector("#game");
 const ctx = canvas.getContext("2d");
 const overlay = document.querySelector("#overlay");
 const startButton = document.querySelector("#startButton");
+const helpButton = document.querySelector("#helpButton");
+const helpModal = document.querySelector("#helpModal");
+const helpCloseButton = document.querySelector("#helpCloseButton");
+const buildStamp = document.querySelector("#buildStamp");
 const soundToggle = document.querySelector("#soundToggle");
 const arenaToggle = document.querySelector("#arenaToggle");
 const comboToggle = document.querySelector("#comboToggle");
@@ -25,6 +30,7 @@ const engine = new TempestEngine({
 });
 const audio = new GameAudio();
 audio.setEnabled(soundToggle.checked);
+buildStamp.textContent = BUILD_STAMP;
 
 const input = {
   left: false,
@@ -133,16 +139,60 @@ function drawPlayer(snapshot) {
 function drawEnemies(snapshot) {
   for (const enemy of snapshot.enemies) {
     const point = pointFor(snapshot, enemy.lane, enemy.depth);
-    ctx.beginPath();
-    if (enemy.kind === "flipper") {
-      ctx.rect(point.x - 7, point.y - 7, 14, 14);
-      ctx.fillStyle = "#f26058";
-    } else {
-      ctx.arc(point.x, point.y, 8, 0, Math.PI * 2);
-      ctx.fillStyle = "#f2c56f";
-    }
-    ctx.fill();
+    drawEnemyShape(enemy, point);
   }
+}
+
+function drawEnemyShape(enemy, point) {
+  const pulse = 1 + Math.sin(performance.now() * 0.006 + enemy.shapeSeed * 8) * 0.08;
+  const size = (8 + enemy.depth * 5) * pulse;
+  const angle = performance.now() * 0.0025 + enemy.shapeSeed * Math.PI * 2;
+
+  ctx.save();
+  ctx.translate(point.x, point.y);
+  ctx.rotate(angle);
+  ctx.lineWidth = 2;
+  ctx.shadowColor = "rgba(80, 240, 255, 0.35)";
+  ctx.shadowBlur = 10;
+
+  if (enemy.kind === "flipper") {
+    drawPolygon([[-size, 0], [0, -size * 0.75], [size, 0], [0, size * 0.75]], "#f26058", "#ffd0cc");
+  } else if (enemy.kind === "needle") {
+    drawPolygon([[0, -size * 1.35], [size * 0.42, size * 0.6], [0, size * 0.28], [-size * 0.42, size * 0.6]], "#50f0ff", "#d8fbff");
+  } else if (enemy.kind === "shard") {
+    drawPolygon([[-size, -size * 0.45], [-size * 0.1, -size], [size, -size * 0.2], [size * 0.25, size], [-size * 0.75, size * 0.55]], "#b77dff", "#f1e7ff");
+  } else if (enemy.kind === "spinner") {
+    for (let i = 0; i < 3; i += 1) {
+      ctx.rotate((Math.PI * 2) / 3);
+      drawPolygon([[0, -size * 1.2], [size * 0.38, 0], [0, size * 0.35], [-size * 0.18, 0]], "#ffcf5c", "#fff2bf");
+    }
+  } else {
+    ctx.beginPath();
+    ctx.arc(0, 0, size * 0.72, 0, Math.PI * 2);
+    ctx.fillStyle = "#f2c56f";
+    ctx.strokeStyle = "#fff2bf";
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0, 0, size * 0.34, 0, Math.PI * 2);
+    ctx.strokeStyle = "rgba(5, 8, 11, 0.7)";
+    ctx.stroke();
+  }
+
+  ctx.restore();
+}
+
+function drawPolygon(points, fill, stroke) {
+  ctx.beginPath();
+  points.forEach(([x, y], index) => {
+    if (index === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = fill;
+  ctx.strokeStyle = stroke;
+  ctx.fill();
+  ctx.stroke();
 }
 
 function drawBullets(snapshot) {
@@ -223,6 +273,11 @@ soundToggle.addEventListener("change", () => audio.setEnabled(soundToggle.checke
 arenaToggle.addEventListener("change", setToggleOptions);
 comboToggle.addEventListener("change", setToggleOptions);
 window.addEventListener("resize", resize);
+helpButton.addEventListener("click", () => helpModal.classList.remove("hidden"));
+helpCloseButton.addEventListener("click", () => helpModal.classList.add("hidden"));
+helpModal.addEventListener("click", (event) => {
+  if (event.target === helpModal) helpModal.classList.add("hidden");
+});
 
 window.addEventListener("keydown", (event) => {
   audio.unlock();
@@ -234,6 +289,7 @@ window.addEventListener("keydown", (event) => {
   }
   if (event.code === "ShiftLeft" || event.code === "ShiftRight") input.special = true;
   if (event.code === "KeyP") engine.pause();
+  if (event.code === "Escape") helpModal.classList.add("hidden");
 });
 
 window.addEventListener("keyup", (event) => {

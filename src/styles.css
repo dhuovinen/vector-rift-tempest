@@ -81,6 +81,90 @@ button {
   cursor: pointer;
 }
 
+.help-button {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(216, 251, 255, 0.92);
+  box-shadow: 0 0 18px rgba(80, 240, 255, 0.28);
+}
+
+.help-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: start end;
+  padding: 18px;
+  background: rgba(5, 8, 11, 0.58);
+}
+
+.help-modal.hidden {
+  display: none;
+}
+
+.help-panel {
+  position: relative;
+  width: min(420px, calc(100vw - 36px));
+  max-height: calc(100vh - 36px);
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid rgba(129, 242, 255, 0.35);
+  background: rgba(6, 12, 16, 0.96);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.48);
+}
+
+.help-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.help-panel h2,
+.help-panel h3 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.help-panel h2 {
+  padding-right: 42px;
+  font-size: 1.5rem;
+}
+
+.help-panel h3 {
+  margin-top: 18px;
+  color: #f2c56f;
+  font-size: 0.86rem;
+  text-transform: uppercase;
+}
+
+.help-panel p {
+  max-width: none;
+  margin-top: 8px;
+  color: #c6dbe2;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.build-line {
+  color: #9fb8c0;
+}
+
 .panel {
   display: flex;
   flex-direction: column;

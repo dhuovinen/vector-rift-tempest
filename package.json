@@ -5,9 +5,13 @@
   "description": "A browser-based Tempest-inspired arcade game with evolving arenas, combo weapons, and synth sound effects.",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/writeBuildInfo.js",
     "dev": "vite --host 127.0.0.1",
+    "prestart": "node scripts/writeBuildInfo.js",
     "start": "vite --host 127.0.0.1",
+    "prebuild": "node scripts/writeBuildInfo.js",
     "build": "vite build",
+    "prepreview": "node scripts/writeBuildInfo.js",
     "preview": "vite preview --host 127.0.0.1",
     "test": "node --test"
   },

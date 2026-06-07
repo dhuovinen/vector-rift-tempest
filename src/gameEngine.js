@@ -1,5 +1,5 @@
 const TWO_PI = Math.PI * 2;
-const INPUT_ROTATION_INTERVAL = 1 / 30;
+const INPUT_ROTATION_INTERVAL = 1 / 21;
 
 function mulberry32(seed) {
   let value = seed >>> 0;
@@ -156,15 +156,25 @@ export class TempestEngine {
   spawnEnemy(lane = null, depth = 0.08) {
     const chosenLane = lane ?? Math.floor(this.random() * this.laneCount);
     if (this.arena.blockedLanes.has(chosenLane)) return null;
+    const roll = this.random();
     const enemy = {
       id: `${this.time.toFixed(3)}-${this.random().toString(16).slice(2)}`,
       lane: chosenLane,
       depth,
       speed: 0.11 + this.wave * 0.011 + this.random() * 0.035,
-      kind: this.random() > 0.82 ? "flipper" : "crawler",
+      kind: this.enemyKindForRoll(roll),
+      shapeSeed: this.random(),
     };
     this.enemies.push(enemy);
     return enemy;
+  }
+
+  enemyKindForRoll(roll) {
+    if (roll > 0.88) return "spinner";
+    if (roll > 0.72) return "flipper";
+    if (roll > 0.54) return "needle";
+    if (roll > 0.36) return "shard";
+    return "crawler";
   }
 
   updateBullets(dt) {

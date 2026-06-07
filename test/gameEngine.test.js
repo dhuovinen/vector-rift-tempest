@@ -41,7 +41,7 @@ test("held rotation input advances at the tuned repeat rate", () => {
     engine.tick(1 / 60, { right: true });
   }
 
-  assert.equal(engine.snapshot().playerLane, 14);
+  assert.equal(engine.snapshot().playerLane, 5);
 });
 
 test("arena enhancement changes arena rules by wave when enabled", () => {

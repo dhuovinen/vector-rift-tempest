@@ -8,6 +8,7 @@
   <body>
     <main class="shell">
       <section class="playfield" aria-label="Tempest Vector Rift game">
+        <button class="help-button" id="helpButton" type="button" aria-label="Game information">?</button>
         <canvas id="game" width="1200" height="800"></canvas>
         <div class="overlay" id="overlay">
           <h1>Vector Rift</h1>
@@ -52,6 +53,29 @@
         </div>
       </aside>
     </main>
+    <div class="help-modal hidden" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="help-panel">
+        <button class="help-close" id="helpCloseButton" type="button" aria-label="Close game information">x</button>
+        <h2 id="helpTitle">Vector Rift</h2>
+        <p class="build-line">Build <strong id="buildStamp">unknown</strong></p>
+        <section>
+          <h3>Objective</h3>
+          <p>Defend the outer rim. Rotate across the lanes, shoot threats before they reach you, and survive as the arena changes shape.</p>
+        </section>
+        <section>
+          <h3>Controls</h3>
+          <p>Left/A and Right/D rotate. Space fires. Shift spends a full special meter. P pauses.</p>
+        </section>
+        <section>
+          <h3>Enhancements</h3>
+          <p>Evolving arenas change the lane rules by wave. Combo weapons reward clean kill streaks with higher scores and a charged lane-clearing special.</p>
+        </section>
+        <section>
+          <h3>Scoring</h3>
+          <p>Every hit adds score. With combo weapons enabled, kill streaks increase score and charge the special meter faster.</p>
+        </section>
+      </div>
+    </div>
     <script type="module" src="/src/app.js"></script>
   </body>
 </html>
