@@ -1,0 +1,17 @@
+{
+  "name": "vector-rift-tempest",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A browser-based Tempest-inspired arcade game with evolving arenas, combo weapons, and synth sound effects.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "start": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  }
+}

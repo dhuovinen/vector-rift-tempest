@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tempest Vector Rift</title>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="playfield" aria-label="Tempest Vector Rift game">
+        <canvas id="game" width="1200" height="800"></canvas>
+        <div class="overlay" id="overlay">
+          <h1>Vector Rift</h1>
+          <p>Rotate around the rim, clear the lanes, and survive the surge.</p>
+          <button id="startButton" type="button">Start Run</button>
+        </div>
+      </section>
+      <aside class="panel">
+        <div class="title">
+          <span>Vector Rift</span>
+          <strong id="stateLabel">Ready</strong>
+        </div>
+        <div class="stats">
+          <div><span>Score</span><strong id="score">0</strong></div>
+          <div><span>Lives</span><strong id="lives">3</strong></div>
+          <div><span>Wave</span><strong id="wave">1</strong></div>
+          <div><span>Combo</span><strong id="combo">0</strong></div>
+        </div>
+        <div class="toggles">
+          <label>
+            <input id="soundToggle" type="checkbox" checked />
+            Sound effects
+          </label>
+          <label>
+            <input id="arenaToggle" type="checkbox" checked />
+            Evolving arenas
+          </label>
+          <label>
+            <input id="comboToggle" type="checkbox" checked />
+            Combo weapons
+          </label>
+        </div>
+        <div class="meter">
+          <span>Special</span>
+          <div><i id="specialFill"></i></div>
+        </div>
+        <div class="controls">
+          <kbd>Left</kbd><kbd>Right</kbd><span>rotate</span>
+          <kbd>Space</kbd><span>shoot</span>
+          <kbd>Shift</kbd><span>special</span>
+          <kbd>P</kbd><span>pause</span>
+        </div>
+      </aside>
+    </main>
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>
