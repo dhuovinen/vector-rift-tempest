@@ -31,6 +31,7 @@ body {
   overflow: hidden;
   border: 1px solid rgba(129, 242, 255, 0.25);
   background: #05080b;
+  touch-action: none;
 }
 
 canvas {
@@ -42,6 +43,7 @@ canvas {
 .overlay {
   position: absolute;
   inset: 0;
+  z-index: 4;
   display: grid;
   place-content: center;
   justify-items: center;
@@ -85,7 +87,7 @@ button {
   position: absolute;
   top: 14px;
   right: 14px;
-  z-index: 3;
+  z-index: 5;
   display: grid;
   place-items: center;
   width: 36px;
@@ -96,6 +98,11 @@ button {
   border-radius: 50%;
   background: rgba(216, 251, 255, 0.92);
   box-shadow: 0 0 18px rgba(80, 240, 255, 0.28);
+}
+
+.touch-fire-zone,
+.touch-rotate-zone {
+  display: none;
 }
 
 .help-modal {
@@ -306,5 +313,44 @@ kbd {
 
   .panel {
     min-height: auto;
+  }
+}
+
+@media (pointer: coarse) {
+  .touch-fire-zone,
+  .touch-rotate-zone {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: block;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .touch-fire-zone {
+    top: 0;
+    height: 58%;
+  }
+
+  .touch-rotate-zone {
+    bottom: 0;
+    height: 26%;
+    background:
+      linear-gradient(90deg, transparent 0%, rgba(80, 240, 255, 0.18) 50%, transparent 100%),
+      linear-gradient(0deg, rgba(216, 251, 255, 0.06), transparent 62%);
+    border-top: 1px solid rgba(129, 242, 255, 0.2);
+  }
+
+  .touch-rotate-zone::before {
+    content: "";
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: 24px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(216, 251, 255, 0.32);
+    box-shadow: 0 0 18px rgba(80, 240, 255, 0.28);
   }
 }

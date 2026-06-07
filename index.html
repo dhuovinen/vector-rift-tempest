@@ -10,6 +10,8 @@
       <section class="playfield" aria-label="Tempest Vector Rift game">
         <button class="help-button" id="helpButton" type="button" aria-label="Game information">?</button>
         <canvas id="game" width="1200" height="800"></canvas>
+        <div class="touch-fire-zone" id="touchFireZone" aria-hidden="true"></div>
+        <div class="touch-rotate-zone" id="touchRotateZone" aria-hidden="true"></div>
         <div class="overlay" id="overlay">
           <h1>Vector Rift</h1>
           <p>Rotate around the rim, clear the lanes, and survive the surge.</p>
@@ -68,7 +70,7 @@
         </section>
         <section>
           <h3>Controls</h3>
-          <p>Left/A and Right/D rotate. Space fires. Shift spends a full special meter. P pauses.</p>
+          <p>Left/A and Right/D rotate. Space fires. Shift spends a full special meter. P pauses. On touch screens, slide along the lower playfield to rotate and tap the upper playfield to fire.</p>
         </section>
         <section>
           <h3>Enhancements</h3>

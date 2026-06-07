@@ -7,6 +7,8 @@ const canvas = document.querySelector("#game");
 const ctx = canvas.getContext("2d");
 const overlay = document.querySelector("#overlay");
 const startButton = document.querySelector("#startButton");
+const touchFireZone = document.querySelector("#touchFireZone");
+const touchRotateZone = document.querySelector("#touchRotateZone");
 const helpButton = document.querySelector("#helpButton");
 const helpModal = document.querySelector("#helpModal");
 const helpCloseButton = document.querySelector("#helpCloseButton");
@@ -43,6 +45,11 @@ const input = {
 };
 
 let lastTime = performance.now();
+const touchRotation = {
+  pointerId: null,
+  x: 0,
+  remainder: 0,
+};
 
 function resize() {
   const rect = canvas.parentElement.getBoundingClientRect();
@@ -267,6 +274,52 @@ function setToggleOptions() {
   });
 }
 
+function isPlayableTouch() {
+  return engine.snapshot().state === "running" && helpModal.classList.contains("hidden");
+}
+
+function touchLanePixels() {
+  const sensitivity = Number(inputSpeed.value);
+  return Math.max(14, 42 - sensitivity * 2.4);
+}
+
+function fireFromTouch(event) {
+  if (!isPlayableTouch()) return;
+  event.preventDefault();
+  audio.unlock();
+  input.fire = true;
+}
+
+function startTouchRotation(event) {
+  if (!isPlayableTouch() || touchRotation.pointerId !== null) return;
+  event.preventDefault();
+  audio.unlock();
+  touchRotation.pointerId = event.pointerId;
+  touchRotation.x = event.clientX;
+  touchRotation.remainder = 0;
+  touchRotateZone.setPointerCapture(event.pointerId);
+}
+
+function moveTouchRotation(event) {
+  if (event.pointerId !== touchRotation.pointerId) return;
+  event.preventDefault();
+
+  touchRotation.remainder += event.clientX - touchRotation.x;
+  touchRotation.x = event.clientX;
+
+  const threshold = touchLanePixels();
+  while (Math.abs(touchRotation.remainder) >= threshold) {
+    engine.rotate(Math.sign(touchRotation.remainder));
+    touchRotation.remainder -= Math.sign(touchRotation.remainder) * threshold;
+  }
+}
+
+function stopTouchRotation(event) {
+  if (event.pointerId !== touchRotation.pointerId) return;
+  touchRotation.pointerId = null;
+  touchRotation.remainder = 0;
+}
+
 startButton.addEventListener("click", () => {
   setToggleOptions();
   audio.unlock();
@@ -279,6 +332,11 @@ arenaToggle.addEventListener("change", setToggleOptions);
 comboToggle.addEventListener("change", setToggleOptions);
 inputSpeed.addEventListener("input", setToggleOptions);
 window.addEventListener("resize", resize);
+touchFireZone.addEventListener("pointerdown", fireFromTouch);
+touchRotateZone.addEventListener("pointerdown", startTouchRotation);
+touchRotateZone.addEventListener("pointermove", moveTouchRotation);
+touchRotateZone.addEventListener("pointerup", stopTouchRotation);
+touchRotateZone.addEventListener("pointercancel", stopTouchRotation);
 helpButton.addEventListener("click", () => helpModal.classList.remove("hidden"));
 helpCloseButton.addEventListener("click", () => helpModal.classList.add("hidden"));
 helpModal.addEventListener("click", (event) => {
